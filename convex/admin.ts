@@ -91,7 +91,9 @@ export const fetchLiveMatches = action({
             awayTeam: fixture.teams.away.name,
             league: fixture.league.name,
             matchDate,
-            odds: { home: 2.0, draw: 3.0, away: 2.5 },
+            homeOdds: 2.0,
+            drawOdds: 3.0,
+            awayOdds: 2.5,
           });
           imported++;
         }

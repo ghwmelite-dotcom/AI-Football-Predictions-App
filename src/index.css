@@ -116,6 +116,26 @@ body {
   @apply translate-x-full;
 }
 
+/* Chat button responsive positioning */
+@media (max-width: 640px) {
+  .chat-button {
+    bottom: 1rem !important;
+    right: 1rem !important;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+  }
+  
+  .chat-panel {
+    bottom: 5.5rem !important;
+    right: 0.5rem !important;
+    left: 0.5rem !important;
+    width: auto !important;
+    max-width: calc(100vw - 1rem) !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+  }
+}
+
 /* Print styles */
 @media print {
   .no-print {

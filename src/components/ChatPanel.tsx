@@ -67,14 +67,14 @@ export function ChatPanel() {
     prevMessagesRef.current = [];
   }, [selectedRoom]);
 
-  // Update presence every 30 seconds when chat is open
+  // Update presence every 60 seconds when chat is open (reduced frequency)
   useEffect(() => {
     if (!isExpanded || isGuest) return;
     
     updatePresence({ roomId: selectedRoom });
     const interval = setInterval(() => {
       updatePresence({ roomId: selectedRoom });
-    }, 30000);
+    }, 60000); // Changed from 30s to 60s
     
     return () => clearInterval(interval);
   }, [isExpanded, selectedRoom, isGuest, updatePresence]);
@@ -127,7 +127,7 @@ export function ChatPanel() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsExpanded(!isExpanded)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl hover:shadow-xl transition-shadow relative"
+        className="chat-button fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl hover:shadow-xl transition-all relative"
       >
         {isExpanded ? "✕" : "💬"}
         
@@ -163,7 +163,7 @@ export function ChatPanel() {
             initial={{ opacity: 0, y: 100, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-24 right-6 z-40 w-[500px] h-[500px] bg-white rounded-2xl shadow-2xl flex overflow-hidden border"
+            className="chat-panel fixed bottom-24 right-6 z-50 w-[500px] max-w-[calc(100vw-3rem)] h-[500px] max-h-[calc(100vh-10rem)] bg-white rounded-2xl shadow-2xl flex overflow-hidden border"
           >
             {/* Main Chat Area */}
             <div className="flex-1 flex flex-col">

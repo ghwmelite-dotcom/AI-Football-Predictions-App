@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
@@ -143,19 +143,38 @@ export const getOnlineUsers = query({
   handler: async (ctx, args) => {
     const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
     
+    // Only fetch recent presence records
     const presenceRecords = await ctx.db
       .query("chatPresence")
-      .withIndex("by_room", (q) => q.eq("roomId", args.roomId))
-      .collect();
+      .withIndex("by_room_and_time", (q) => 
+        q.eq("roomId", args.roomId).gt("lastSeen", fiveMinutesAgo)
+      )
+      .take(50); // Limit to prevent excessive reads
     
-    const onlineUsers = presenceRecords.filter(
-      (record) => record.lastSeen > fiveMinutesAgo
-    );
-    
+    // Deduplicate by userId
     const uniqueUsers = Array.from(
-      new Map(onlineUsers.map(user => [user.userId, user])).values()
+      new Map(presenceRecords.map(user => [user.userId, user])).values()
     );
     
     return uniqueUsers;
+  },
+});
+
+// Cleanup old presence records (called by cron)
+export const cleanupOldPresence = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const oneHourAgo = Date.now() - 60 * 60 * 1000;
+    
+    const oldRecords = await ctx.db
+      .query("chatPresence")
+      .filter((q) => q.lt(q.field("lastSeen"), oneHourAgo))
+      .take(100);
+    
+    for (const record of oldRecords) {
+      await ctx.db.delete(record._id);
+    }
+    
+    return { deleted: oldRecords.length };
   },
 });

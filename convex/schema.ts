@@ -145,7 +145,8 @@ const applicationTables = {
     lastSeen: v.number(),
   })
     .index("by_room", ["roomId"])
-    .index("by_user_and_room", ["userId", "roomId"]),
+    .index("by_user_and_room", ["userId", "roomId"])
+    .index("by_room_and_time", ["roomId", "lastSeen"]),
 };
 
 export default defineSchema({

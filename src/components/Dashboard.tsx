@@ -11,20 +11,10 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 export function Dashboard() {
-  const createSampleMatches = useMutation(api.matches.createSampleMatches);
   const matches = useQuery(api.matches.getUpcomingMatches, { limit: 5 });
   const loggedInUser = useQuery(api.auth.loggedInUser);
   const isAdmin = loggedInUser?.role === "admin";
   const isGuest = loggedInUser?.isAnonymous === true;
-  
-  const handleCreateSampleData = async () => {
-    try {
-      await createSampleMatches();
-      toast.success("Sample matches created!");
-    } catch (error) {
-      toast.error("Failed to create sample data");
-    }
-  };
 
   return (
     <motion.div
@@ -60,12 +50,6 @@ export function Dashboard() {
             >
             <h3 className="text-lg font-semibold text-gray-800 mb-4">⚡ Quick Actions</h3>
             <div className="space-y-3">
-              <AnimatedButton
-                onClick={handleCreateSampleData}
-                className="w-full"
-              >
-                Create Sample Matches
-              </AnimatedButton>
               <AnimatedButton
                 onClick={() => window.location.reload()}
                 variant="secondary"
