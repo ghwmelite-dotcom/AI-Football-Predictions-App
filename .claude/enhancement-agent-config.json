@@ -1,0 +1,167 @@
+{
+  "projectName": "AI Football Predictions Platform",
+  "version": "2.0.0",
+  "architecture": {
+    "backend": "Convex BaaS",
+    "frontend": "React 19 + TypeScript + Vite",
+    "styling": "Tailwind CSS + Framer Motion",
+    "auth": "Convex Auth (Anonymous)"
+  },
+  "codePatterns": {
+    "backend": {
+      "location": "convex/",
+      "fileNaming": "camelCase.ts",
+      "patterns": {
+        "query": "export const functionName = query({ args: { ... }, handler: async (ctx, args) => { ... } });",
+        "mutation": "export const functionName = mutation({ args: { ... }, handler: async (ctx, args) => { ... } });",
+        "action": "export const functionName = action({ args: { ... }, handler: async (ctx, args) => { ... } });"
+      },
+      "authGuard": "const userId = await getAuthUserId(ctx);\nif (!userId) throw new Error(\"Must be logged in\");",
+      "adminGuard": "const roleDoc = await ctx.db.query(\"userRoles\").withIndex(\"by_user\", (q) => q.eq(\"userId\", userId)).first();\nif (roleDoc?.role !== \"admin\") throw new Error(\"Admin access required\");",
+      "errorHandling": "try { ... } catch (error) { console.error(\"Error:\", error); throw new Error(\"User-friendly message\"); }"
+    },
+    "frontend": {
+      "location": "src/components/",
+      "fileNaming": "PascalCase.tsx",
+      "patterns": {
+        "component": "export function ComponentName() { ... }",
+        "imports": "import { useQuery, useMutation } from \"convex/react\";\nimport { api } from \"../../convex/_generated/api\";",
+        "card": "className=\"bg-white rounded-xl p-6 shadow-lg\"",
+        "button": "className=\"bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-xl transition-all\"",
+        "animation": "import { motion } from \"framer-motion\";\n<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>"
+      },
+      "hooks": {
+        "query": "const data = useQuery(api.moduleName.functionName, { args });",
+        "mutation": "const mutationFn = useMutation(api.moduleName.functionName);",
+        "action": "const actionFn = useAction(api.moduleName.functionName);"
+      }
+    },
+    "database": {
+      "location": "convex/schema.ts",
+      "pattern": "tableName: defineTable({ field: v.type() }).index(\"indexName\", [\"field\"])",
+      "types": ["v.string()", "v.number()", "v.boolean()", "v.id(\"tableName\")", "v.optional()", "v.array()", "v.object()", "v.union()"],
+      "indexes": "Always add indexes for fields used in queries (.withIndex)"
+    }
+  },
+  "featureTiers": {
+    "tier1": {
+      "description": "Advanced Features",
+      "includes": ["Gamification", "Advanced AI Predictions", "Bankroll Management", "Value Bets & Odds Comparison"],
+      "status": "Complete"
+    },
+    "tier2": {
+      "description": "Differentiation Features",
+      "includes": ["Social Trading", "Enhanced Analytics", "Personalized AI Assistant", "Live Features"],
+      "status": "Complete"
+    },
+    "tier3": {
+      "description": "Future Enhancements",
+      "ideas": [
+        "Mobile app (React Native)",
+        "Advanced machine learning models",
+        "Blockchain integration for transparent tipster records",
+        "Multi-language support",
+        "SMS/Email notifications",
+        "Telegram/Discord bots",
+        "API marketplace",
+        "White-label solution"
+      ]
+    }
+  },
+  "enhancementWorkflows": {
+    "newFeature": [
+      "1. Update schema.ts with new tables/fields",
+      "2. Create backend functions in convex/",
+      "3. Create frontend components in src/components/",
+      "4. Update Dashboard.tsx if adding new view",
+      "5. Test functionality",
+      "6. Update documentation"
+    ],
+    "newBackendFunction": [
+      "1. Choose type (query/mutation/action)",
+      "2. Add auth guard if needed",
+      "3. Implement validation with args",
+      "4. Add error handling",
+      "5. Test with frontend"
+    ],
+    "newComponent": [
+      "1. Create .tsx file in src/components/",
+      "2. Import Convex hooks",
+      "3. Add Tailwind styling",
+      "4. Add Framer Motion animations",
+      "5. Integrate with Dashboard"
+    ],
+    "optimization": [
+      "1. Identify performance bottleneck",
+      "2. Add pagination if needed",
+      "3. Optimize database queries",
+      "4. Add caching if appropriate",
+      "5. Measure improvement"
+    ]
+  },
+  "qualityChecklist": {
+    "backend": [
+      "TypeScript types defined",
+      "Input validation with Convex validators",
+      "Authentication guard added",
+      "Error handling implemented",
+      "Database indexes created",
+      "Function documented"
+    ],
+    "frontend": [
+      "TypeScript props defined",
+      "Responsive design (mobile/tablet/desktop)",
+      "Loading states handled",
+      "Error states handled",
+      "Animations added",
+      "Accessibility considered"
+    ],
+    "general": [
+      "Follows existing code patterns",
+      "No security vulnerabilities",
+      "Documentation updated",
+      "Tested manually",
+      "Git commit with clear message"
+    ]
+  },
+  "commonPatterns": {
+    "leaderboard": {
+      "backend": "Sort by field, limit to top N, calculate ranking",
+      "frontend": "Display table with rank, user, stats, badges"
+    },
+    "statistics": {
+      "backend": "Aggregate data, calculate metrics (avg, sum, count, percentage)",
+      "frontend": "Cards with numbers, charts, trend indicators"
+    },
+    "realtime": {
+      "pattern": "Use Convex useQuery for automatic updates",
+      "example": "const liveMatches = useQuery(api.matches.getLiveMatches);"
+    },
+    "forms": {
+      "pattern": "Controlled inputs with state, validation, mutation on submit",
+      "example": "const [value, setValue] = useState(''); const submitFn = useMutation(...);"
+    }
+  },
+  "externalAPIs": {
+    "recommended": {
+      "matchData": "API-Football (api-football.com)",
+      "odds": "The Odds API (theoddsapi.com)",
+      "liveScores": "Sportradar or LiveScore API",
+      "streaming": "Check legal streaming partnerships"
+    },
+    "integration": "Use Convex actions for external API calls"
+  },
+  "aiGuidance": {
+    "whenToUseOpenAI": [
+      "Prediction generation",
+      "Match analysis",
+      "Contextual insights",
+      "User question answering"
+    ],
+    "modelRecommendations": {
+      "predictions": "GPT-4 (higher accuracy)",
+      "insights": "GPT-3.5 (cost-effective)",
+      "fallback": "Always have statistical fallback"
+    }
+  }
+}
