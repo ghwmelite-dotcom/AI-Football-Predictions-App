@@ -101,6 +101,14 @@ function Content({ activeTab }: { activeTab: "dashboard" | "admin" }) {
                 </span>
               )}
             </p>
+            {loggedInUser?.role !== "admin" && (
+              <button
+                onClick={handleMakeMeAdmin}
+                className="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
+              >
+                👑 Make Me Admin
+              </button>
+            )}
           </div>
         </motion.div>
       </motion.div>
